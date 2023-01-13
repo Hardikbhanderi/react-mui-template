@@ -37,6 +37,11 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
+import { useRouter } from 'next/router'
+// ** Firebase Auth Imports
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
+import { app } from 'src/helper/firebase-config'
+import toast from 'src/components/toast'
 
 // ** Styled Components
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -59,8 +64,11 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
 }))
 
 const RegisterPage = () => {
+  const router = useRouter()
   // ** States
   const [values, setValues] = useState({
+    username: '',
+    email: '',
     password: '',
     showPassword: false
   })
@@ -78,6 +86,25 @@ const RegisterPage = () => {
 
   const handleMouseDownPassword = event => {
     event.preventDefault()
+  }
+
+  const errorMessage = {
+    'auth/email-already-in-use': 'This email already exist. Please try to login',
+    'auth/missing-email': 'Please enter email'
+  }
+
+  const handleSignupClick = async e => {
+    e.preventDefault()
+    const firebaseAuth = getAuth()
+    try {
+      const res = await createUserWithEmailAndPassword(firebaseAuth, values.email, values.password)
+      if (res) {
+        sessionStorage.setItem('Auth Token', res._tokenResponse.refreshToken)
+        router.replace('/')
+      }
+    } catch (err) {
+      toast.error(errorMessage[err.code])
+    }
   }
 
   return (
@@ -163,15 +190,23 @@ const RegisterPage = () => {
             </Typography>
             <Typography variant='body2'>Make your app management easy and fun!</Typography>
           </Box>
-          <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-            <TextField autoFocus fullWidth id='username' label='Username' sx={{ marginBottom: 4 }} />
-            <TextField fullWidth type='email' label='Email' sx={{ marginBottom: 4 }} />
+          <form noValidate autoComplete='off' onSubmit={handleSignupClick}>
+            <TextField
+              autoFocus
+              fullWidth
+              onChange={handleChange('username')}
+              id='username'
+              label='Username'
+              sx={{ marginBottom: 4 }}
+            />
+            <TextField fullWidth type='email' onChange={handleChange('email')} label='Email' sx={{ marginBottom: 4 }} />
             <FormControl fullWidth>
               <InputLabel htmlFor='auth-register-password'>Password</InputLabel>
               <OutlinedInput
                 label='Password'
                 value={values.password}
                 id='auth-register-password'
+                name='password'
                 onChange={handleChange('password')}
                 type={values.showPassword ? 'text' : 'password'}
                 endAdornment={

@@ -32,12 +32,15 @@ import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
+import { app } from 'src/helper/firebase-config'
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
+import toast from 'src/components/toast'
 
 // ** Styled Components
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -60,6 +63,7 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
 const LoginPage = () => {
   // ** State
   const [values, setValues] = useState({
+    email: '',
     password: '',
     showPassword: false
   })
@@ -78,6 +82,25 @@ const LoginPage = () => {
 
   const handleMouseDownPassword = event => {
     event.preventDefault()
+  }
+  const errorMessage = {
+    'auth/wrong-password': 'Please enter valid password',
+    'auth/user-not-found': 'User not registered',
+    'auth/too-many-requests': 'Too many attempts please try later'
+  }
+
+  const handleLoginClick = async e => {
+    e.preventDefault()
+    const firebaseAuth = getAuth()
+    try {
+      const res = await signInWithEmailAndPassword(firebaseAuth, values.email, values.password)
+      if (res) {
+        sessionStorage.setItem('Auth Token', res._tokenResponse.refreshToken)
+        router.replace('/')
+      }
+    } catch (err) {
+      toast.error(errorMessage[err.code])
+    }
   }
 
   return (
@@ -163,8 +186,16 @@ const LoginPage = () => {
             </Typography>
             <Typography variant='body2'>Please sign-in to your account and start the adventure</Typography>
           </Box>
-          <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-            <TextField autoFocus fullWidth id='email' label='Email' sx={{ marginBottom: 4 }} />
+          <form noValidate autoComplete='off' onSubmit={handleLoginClick}>
+            <TextField
+              autoFocus
+              value={values.email}
+              fullWidth
+              id='email'
+              onChange={handleChange('email')}
+              label='Email'
+              sx={{ marginBottom: 4 }}
+            />
             <FormControl fullWidth>
               <InputLabel htmlFor='auth-login-password'>Password</InputLabel>
               <OutlinedInput
@@ -195,13 +226,7 @@ const LoginPage = () => {
                 <LinkStyled onClick={e => e.preventDefault()}>Forgot Password?</LinkStyled>
               </Link>
             </Box>
-            <Button
-              fullWidth
-              size='large'
-              variant='contained'
-              sx={{ marginBottom: 7 }}
-              onClick={() => router.push('/')}
-            >
+            <Button fullWidth size='large' variant='contained' sx={{ marginBottom: 7 }} type='submit'>
               Login
             </Button>
             <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>

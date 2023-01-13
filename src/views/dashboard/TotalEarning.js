@@ -11,8 +11,8 @@ import LinearProgress from '@mui/material/LinearProgress'
 // ** Icons Imports
 import MenuUp from 'mdi-material-ui/MenuUp'
 import DotsVertical from 'mdi-material-ui/DotsVertical'
-import React, {useState} from 'react'
-import {Menu, MenuItem} from '@mui/material'
+import React, { useState } from 'react'
+import { Menu, MenuItem } from '@mui/material'
 
 const data = [
   {
@@ -45,46 +45,54 @@ const data = [
 ]
 
 const TotalEarning = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+  const [anchorEl, setAnchorEl] = useState(null)
+  const open = Boolean(anchorEl)
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget)
+  }
 
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
   return (
-    <Card sx={{
-      ':hover': {
-        boxShadow: 10, // theme.shadows[20]
-      },
-    }}>
+    <Card
+      sx={{
+        ':hover': {
+          boxShadow: 10 // theme.shadows[20]
+        }
+      }}
+    >
       <CardHeader
         title='Total Earning'
         titleTypographyProps={{ sx: { lineHeight: '1.6 !important', letterSpacing: '0.15px !important' } }}
         action={
           <>
-          <IconButton onClick={handleClick} size='small' aria-label='settings' className='card-more-options' sx={{ color: 'text.secondary' }}>
-            <DotsVertical />
-          </IconButton>
-          <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          MenuListProps={{
-            'aria-labelledby': 'basic-button',
-          }}
-          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        >
-          <MenuItem onClick={handleClose}>Profile</MenuItem>
-          <MenuItem onClick={handleClose}>My account</MenuItem>
-          <MenuItem onClick={handleClose}>Logout</MenuItem>
-        </Menu>
-        </>
+            <IconButton
+              onClick={handleClick}
+              size='small'
+              aria-label='settings'
+              className='card-more-options'
+              sx={{ color: 'text.secondary' }}
+            >
+              <DotsVertical />
+            </IconButton>
+            <Menu
+              id='basic-menu'
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button'
+              }}
+              transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+            >
+              <MenuItem onClick={handleClose}>Profile</MenuItem>
+              <MenuItem onClick={handleClose}>My account</MenuItem>
+              <MenuItem onClick={handleClose}>Logout</MenuItem>
+            </Menu>
+          </>
         }
       />
       <CardContent sx={{ pt: theme => `${theme.spacing(2.25)} !important` }}>
