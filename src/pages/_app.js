@@ -24,6 +24,9 @@ import { createEmotionCache } from 'src/@core/utils/create-emotion-cache'
 // ** React Perfect Scrollbar Style
 import 'react-perfect-scrollbar/dist/css/styles.css'
 
+import 'react-toastify/dist/ReactToastify.css'
+import { ToastContainer } from 'react-toastify'
+
 // ** Global css styles
 import '../../styles/globals.css'
 
@@ -68,6 +71,7 @@ const App = props => {
           }}
         </SettingsConsumer>
       </SettingsProvider>
+      <ToastContainer />
     </CacheProvider>
   )
 }
